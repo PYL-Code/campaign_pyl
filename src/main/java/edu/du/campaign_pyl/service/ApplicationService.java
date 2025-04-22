@@ -13,6 +13,10 @@ public class ApplicationService {
         this.applicationRepository = applicationRepository;
     }
 
+    public Application getApplication(Long id) {
+        return applicationRepository.findById(id).orElse(null);
+    }
+
     public void save(Application application) {
         applicationRepository.save(application);
     }

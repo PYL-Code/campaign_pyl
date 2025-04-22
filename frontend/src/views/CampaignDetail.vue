@@ -3,7 +3,7 @@
     <div class="campaign-main">
       <!-- 이미지 섹션 -->
       <div class="campaign-image">
-        <img :src="campaign.imageUrl" alt="캠페인 이미지" />
+        <img :src="`http://localhost:9876${campaign.imageUrl}`" alt="캠페인 이미지" />
       </div>
 
       <!-- 정보 섹션 -->
@@ -12,13 +12,13 @@
         <p class="campaign-description">{{ campaign.description }}</p>
 
         <ul class="campaign-meta">
-          <li><strong>모집기간:</strong> ~ {{ formatDate(campaign.endDate) }}</li>
-          <li><strong>업체명:</strong> {{ campaign.title }}</li>
-          <li><strong>진행 상태:</strong> {{ campaign.progressStatus }}</li>
+          <li><b>모집기간:</b> {{ formatDate(campaign.startDate) }} ~ {{ formatDate(campaign.endDate) }}</li>
+          <li><b>업체명:</b> {{ campaign.title }}</li>
+          <li><b>진행 상태:</b> {{ campaign.progressStatus }}</li>
         </ul>
 
         <div class="campaign-actions">
-          <button class="apply-button">신청하기</button>
+          <router-link :to="`/campaign/apply/${route.params.id}`"><button class="apply-button">신청하기</button></router-link>
         </div>
       </div>
     </div>

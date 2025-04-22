@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     port: 5173, // 프론트 포트
     proxy: {
-      '^/campaign': {
+      '^/api': {
         target: 'http://localhost:9876',
         changeOrigin: true,
         secure: false,

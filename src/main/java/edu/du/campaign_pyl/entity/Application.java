@@ -25,12 +25,13 @@ public class Application {
 
     @ManyToOne(fetch = FetchType.EAGER) //TODO: 서비스할 경우 lazy로 변경하는 게 더 안정적
     @JoinColumn(name = "user_no", nullable = false)
-    private User user;
+    private Users users;
 
     @Column(nullable = false)
     private String comment;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @Column(nullable = false)
