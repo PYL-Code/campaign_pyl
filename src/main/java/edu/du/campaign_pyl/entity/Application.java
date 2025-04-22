@@ -19,11 +19,11 @@ public class Application {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long applicationNo;
 
-    @ManyToOne(fetch = FetchType.EAGER) //TODO: 서비스할 경우 lazy로 변경하는 게 더 안정적
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "campaign_no", nullable = false)
     private Campaign campaign;
 
-    @ManyToOne(fetch = FetchType.EAGER) //TODO: 서비스할 경우 lazy로 변경하는 게 더 안정적
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_no", nullable = false)
     private Users users;
 

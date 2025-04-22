@@ -2,7 +2,7 @@
   <div class="campaign-detail-container">
     <div class="campaign-main">
       <!-- 이미지 섹션 -->
-      <div class="campaign-image">
+      <div class="campaign-image" :class="{ blurred: isReviewing }">
         <img :src="`http://localhost:9876${campaign.imageUrl}`" alt="캠페인 이미지" />
       </div>
 
@@ -11,14 +11,21 @@
         <h2 class="campaign-title">[{{ campaign.category.name }}] {{ campaign.title }}</h2>
         <p class="campaign-description">{{ campaign.description }}</p>
 
-        <ul class="campaign-meta">
+        <ul class="campaign-meta" v-if="!isReviewing">
           <li><b>모집기간:</b> {{ formatDate(campaign.startDate) }} ~ {{ formatDate(campaign.endDate) }}</li>
-          <li><b>업체명:</b> {{ campaign.title }}</li>
-          <li><b>진행 상태:</b> {{ campaign.progressStatus }}</li>
+          <li><b>모집인원:</b> {{ campaign.recruitCount }}명</li>
+          <li><b>신청인원:</b> {{campaign.currentCount}}명</li>
         </ul>
 
+        <!-- 리뷰 작성 기간 표시 -->
+        <p v-if="isReviewing" class="reviewing-notice">
+          🔍 현재 리뷰 작성 기간입니다 ({{ formatDate(reviewStartDate) }} ~ {{ formatDate(reviewEndDate) }})
+        </p>
+
         <div class="campaign-actions">
-          <router-link :to="`/campaign/apply/${route.params.id}`"><button class="apply-button">신청하기</button></router-link>
+          <router-link :to="`/campaign/apply/${route.params.id}`">
+            <button class="apply-button" :disabled="isReviewing">신청하기</button>
+          </router-link>
         </div>
       </div>
     </div>
@@ -26,12 +33,28 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
 
 const route = useRoute()
 const campaign = ref({ category: {} })
+
+const reviewStartDate = ref(null)
+const reviewEndDate = ref(null)
+
+const isReviewing = computed(() => {
+  if (!campaign.value.endDate) return false
+
+  const now = new Date()
+  const endDate = new Date(campaign.value.endDate)
+
+  reviewStartDate.value = endDate
+  reviewEndDate.value = new Date(endDate)
+  reviewEndDate.value.setDate(reviewEndDate.value.getDate() + 7)
+
+  return now >= endDate && now <= reviewEndDate.value
+})
 
 onMounted(async () => {
   const { data } = await axios.get(`/api/campaign/detail/${route.params.id}`)
@@ -63,11 +86,23 @@ const formatDate = (dateStr) => {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.campaign-image img {
+.campaign-image {
   width: 400px;
   height: auto;
   border-radius: 8px;
+  overflow: hidden;
+}
+
+.campaign-image img {
+  width: 100%;
+  height: auto;
   object-fit: cover;
+  border-radius: 8px;
+}
+
+.campaign-image.blurred img {
+  filter: blur(6px);
+  opacity: 0.6;
 }
 
 .campaign-info {
@@ -98,6 +133,13 @@ const formatDate = (dateStr) => {
   color: #444;
 }
 
+.reviewing-notice {
+  font-size: 1rem;
+  color: #cc0000;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
 .apply-button {
   background-color: #2cb148;
   color: white;
@@ -107,9 +149,15 @@ const formatDate = (dateStr) => {
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  width: 100%;
 }
 
-.apply-button:hover {
+.apply-button:disabled {
+  background-color: #a5a5a5;
+  cursor: not-allowed;
+}
+
+.apply-button:hover:not(:disabled) {
   background-color: #23953a;
 }
 </style>

@@ -52,7 +52,7 @@ public class Campaign {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @ManyToOne(fetch = FetchType.EAGER) //TODO : FetchType을 LAZY로 바꾸는 것이 서비스 시 안정적.
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_no", nullable = false)
     private Category category;
 
