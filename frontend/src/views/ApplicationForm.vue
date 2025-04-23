@@ -98,7 +98,11 @@ const submitApplication = async () => {
     alert('신청이 완료되었습니다.')
     application.value.comment = ''
   } catch (error) {
-    alert('신청 중 오류가 발생했습니다.')
+    if (error.response && error.response.status === 409) {
+      alert('이미 신청한 캠페인입니다.')  // ❗ 중복 신청 알림
+    } else {
+      alert('신청 중 오류가 발생했습니다.')
+    }
     console.error(error)
   }
 }

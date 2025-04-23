@@ -6,6 +6,8 @@ import edu.du.campaign_pyl.repository.CampaignRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class ApplicationService {
 
@@ -20,13 +22,23 @@ public class ApplicationService {
 
     @Transactional
     public void apply(Application application) {
-        applicationRepository.save(application);
 
         Long campaignNo = application.getCampaign().getCampaignNo();
+        Long userNo = application.getUsers().getUserNo();
+
+        boolean alreadyApplied = applicationRepository
+                .findByUsers_UserNoAndCampaign_CampaignNo(userNo, campaignNo)
+                .isPresent();
+
+        if (alreadyApplied) {
+            throw new IllegalStateException("이미 신청한 캠페인입니다.");
+        }
+
         campaignRepository.incrementCurrentCount(campaignNo);
+        applicationRepository.save(application);
     }
 
-    public Application getApplication(Long id) {
-        return applicationRepository.findById(id).orElse(null);
+    public List<Application> getApplication(Long id) {
+        return applicationRepository.findByUsers_UserNo(id);
     }
 }
