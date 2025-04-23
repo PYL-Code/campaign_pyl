@@ -41,4 +41,8 @@ public class ApplicationService {
     public List<Application> getApplication(Long id) {
         return applicationRepository.findByUsers_UserNo(id);
     }
+
+    public void delete(Long id) {
+        applicationRepository.deleteById(id);
+    }
 }

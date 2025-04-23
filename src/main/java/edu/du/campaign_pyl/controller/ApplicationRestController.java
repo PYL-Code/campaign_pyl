@@ -31,10 +31,17 @@ public class ApplicationRestController {
         this.userService = userService;
     }
 
-//    @GetMapping("/myapplication/{id}")
-//    public ResponseEntity<List<Application>> getMyApplications(@PathVariable Long id) {
-//
-//    }
+    @GetMapping("/myapplication/{id}")
+    public ResponseEntity<List<Application>> getMyApplications(@PathVariable Long id) {
+        List<Application> applications = applicationService.getApplication(id);
+        return ResponseEntity.ok(applications);
+    }
+
+    @DeleteMapping("/myapplication/delete/{id}")
+    public ResponseEntity<String> deleteMyApplication(@PathVariable Long id) {
+        applicationService.delete(id);
+        return ResponseEntity.ok("신청 목록에서 삭제되었습니다.");
+    }
 
     @GetMapping("/users/select/{id}")
     public ResponseEntity<Users> getUser(@PathVariable Long id) {

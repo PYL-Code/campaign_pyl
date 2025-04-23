@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import CampaignDetail from '../views/CampaignDetail.vue'
-import ApplicationForm from "../views/ApplicationForm.vue"; // 캠페인 상세 페이지
+import ApplicationForm from "../views/ApplicationForm.vue";
+import MyApplication from "../views/MyApplication.vue"; // 캠페인 상세 페이지
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,6 +21,11 @@ const router = createRouter({
             path: '/campaign/apply/:id',
             name: 'application',
             component: ApplicationForm
+        },
+        {
+            path: '/mypage/myapplication',
+            name: 'myApplication',
+            component: MyApplication
         }
     ]
 })

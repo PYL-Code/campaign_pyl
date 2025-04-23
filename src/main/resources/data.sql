@@ -69,3 +69,21 @@ VALUES
     ('user002', 'secret5678', '민초단장', 'mintcho@example.com', 'https://instagram.com/mintcho', '010-2222-3333', 'USER', '2025-04-20 09:00:00'),
 
     ('admin01', 'adminpass', '관리자', 'admin@example.com', 'https://instagram.com/admin', '010-9999-0000', 'ADMIN', '2025-04-18 08:00:00');
+
+INSERT INTO application (
+    campaign_no, user_no, comment, status, created_at
+) VALUES
+-- 프리미엄 즉석 떡볶이 체험단
+(1, 1, '매콤한 떡볶이 리뷰 자신 있어요!', 'PENDING', '2025-04-21T11:00:00'),
+
+-- 비건 도시락 리뷰 캠페인
+(2, 1, '채식 도시락이라니! 꼭 해보고 싶어요.', 'APPROVED', '2025-04-21T11:30:00'),
+
+-- 촉촉보습 수분크림 체험단
+(3, 1, '건성 피부에 딱이에요. 후기 자신 있습니다.', 'PENDING', '2025-04-21T12:00:00'),
+
+-- 스마트 무선 이어폰 체험단
+(6, 1, '출퇴근길에 매일 써보고 자세히 써볼게요.', 'APPROVED', '2025-04-21T12:15:00'),
+
+-- 휴대용 손선풍기 체험단
+(10, 1, '여름철 필수템! 사용기 잘 남길게요.', 'REJECTED', '2025-04-21T12:30:00');
