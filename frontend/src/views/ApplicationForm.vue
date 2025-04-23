@@ -45,10 +45,11 @@
 
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeMount } from 'vue'
 import axios from 'axios'
-import { useRoute } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
+const router = useRouter()
 const route = useRoute()
 const userNo = 1 // 🔹 임시: 실제 구현에서는 로그인 사용자 ID로 대체해야 함
 const campaignNo = route.params.id
@@ -79,6 +80,15 @@ onMounted(async () => {
     // console.log("userData: ", userData)
   } catch (error) {
     console.error('데이터 불러오기 오류:', error)
+  }
+})
+
+onBeforeMount(async () => {
+  const { data } = await axios.get(`/api/campaign/detail/${route.params.id}`)
+
+  if (data.progressStatus !== 'ONGOING') {
+    alert('현재 신청할 수 없는 캠페인입니다.')
+    router.replace(`/campaign/detail/${route.params.id}`)
   }
 })
 
