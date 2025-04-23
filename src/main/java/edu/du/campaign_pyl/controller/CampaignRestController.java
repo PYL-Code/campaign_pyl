@@ -22,6 +22,7 @@ public class CampaignRestController {
     @GetMapping("/detail/{id}")
     public ResponseEntity<Campaign> detail(@PathVariable Long id, Model model) {
         Campaign campaign = campaignService.findById(id);
+        campaignService.updateProgressStatusIfExpired(campaign);
         return ResponseEntity.ok(campaign);
     }
 }
