@@ -51,8 +51,8 @@ import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
 const route = useRoute()
-const userNo = 1 // 🔹 임시: 실제 구현에서는 로그인 사용자 ID로 대체해야 함
-const campaignNo = route.params.id
+const userNo = 1 // 🔹 TODO 임시: 실제 구현에서는 로그인 사용자 ID로 대체해야 함
+const campaignNo = route.params.id // 캠페인 ID를 URL에서 가져옴
 
 // 초기값 설정
 const application = ref({
@@ -60,7 +60,7 @@ const application = ref({
   status: 'PENDING',
   createdAt: new Date().toISOString(),
   campaign: {
-    campaignNo: campaignNo // 캠페인 ID를 URL에서 가져옴
+    campaignNo: campaignNo
   },
   users: {
     userNo: userNo

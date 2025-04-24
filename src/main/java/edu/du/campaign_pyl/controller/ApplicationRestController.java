@@ -18,8 +18,6 @@ public class ApplicationRestController {
 
     private final ApplicationService applicationService;
 
-    private final CampaignService campaignService;
-
     private final UserService userService;
 
     public ApplicationRestController(
@@ -27,7 +25,6 @@ public class ApplicationRestController {
             UserService userService,
             CampaignService campaignService) {
         this.applicationService = applicationService;
-        this.campaignService = campaignService;
         this.userService = userService;
     }
 

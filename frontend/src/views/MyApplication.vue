@@ -2,12 +2,20 @@
   <div class="my-application-wrapper">
     <h2 class="page-title">나의 체험단 신청 목록</h2>
 
+    <!-- 필터 버튼 -->
+    <div class="status-filter">
+      <button @click="filterApplications('ALL')" :class="{ active: filter === 'ALL' }">전체</button>
+      <button @click="filterApplications('PENDING')" :class="{ active: filter === 'PENDING' }">처리 중</button>
+      <button @click="filterApplications('APPROVED')" :class="{ active: filter === 'APPROVED' }">선정됨</button>
+      <button @click="filterApplications('REJECTED')" :class="{ active: filter === 'REJECTED' }">미선정</button>
+    </div>
+
     <div v-if="applications.length === 0" class="empty-message">
       신청한 캠페인이 없습니다.
     </div>
 
     <div
-        v-for="application in applications"
+        v-for="application in filteredApplications"
         :key="application.applicationNo"
         class="application-card"
     >
@@ -18,7 +26,7 @@
         </div>
 
         <!-- 정보 섹션 -->
-        <div class="application-info">
+        <div class="application-info" :class="{ rejected: application.status === 'REJECTED' }">
           <h3 class="campaign-title">{{ application.campaign.title }}</h3>
           <p><strong>신청 코멘트:</strong> {{ application.comment }}</p>
           <p><strong>상태:</strong> {{ statusText[application.status] }}</p>
@@ -51,12 +59,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 
 const userNo = 1 // 🔹 임시: 실제 로그인된 유저 ID로 대체 필요
-const applications = ref([])
-
+const applications = ref([]) // 모든 신청 목록
+const filter = ref('ALL') // 필터 상태
 const statusText = {
   PENDING: '처리 중',
   APPROVED: '선정됨',
@@ -93,6 +101,19 @@ const formatDate = (dateString) => {
   })
 }
 
+// 상태별로 필터링된 신청 목록
+const filteredApplications = computed(() => {
+  if (filter.value === 'ALL') {
+    return applications.value
+  } else {
+    return applications.value.filter(application => application.status === filter.value)
+  }
+})
+
+const filterApplications = (status) => {
+  filter.value = status
+}
+
 onMounted(() => {
   fetchApplications()
 })
@@ -112,6 +133,28 @@ onMounted(() => {
   text-align: center;
   margin-bottom: 32px;
   color: #2c3e50;
+}
+
+.status-filter {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.status-filter button {
+  padding: 10px 16px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.status-filter button.active {
+  background-color: #3498db;
+  color: white;
 }
 
 .empty-message {
@@ -155,6 +198,14 @@ onMounted(() => {
   flex: 1;
   display: flex;
   flex-direction: column;
+}
+
+.application-info.rejected .campaign-title {
+  color: #aaa;
+}
+
+.application-info.rejected p {
+  color: #999;
 }
 
 .campaign-title {
