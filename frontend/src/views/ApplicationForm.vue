@@ -6,7 +6,7 @@
     <div class="info-card">
       <h3 class="section-title">신청 체험 정보</h3>
       <div class="card-content">
-        <img :src="`http://localhost:9876${campaign.imageUrl}`" alt="캠페인 이미지" class="campaign-image" />
+        <img :src="`http://localhost:9876/images/${campaign.imageUrl}`" alt="캠페인 이미지" class="campaign-image" />
         <div class="campaign-text">
           <h4 class="campaign-title">{{ campaign.title }}</h4>
           <p class="campaign-description">{{ campaign.description }}</p>

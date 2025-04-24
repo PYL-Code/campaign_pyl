@@ -1,20 +1,50 @@
 <template>
   <div class="my-application-wrapper">
-    <h2>나의 체험단 신청 목록</h2>
+    <h2 class="page-title">나의 체험단 신청 목록</h2>
 
     <div v-if="applications.length === 0" class="empty-message">
       신청한 캠페인이 없습니다.
     </div>
 
-    <div v-for="application in applications" :key="application.applicationNo" class="application-card">
-      <div class="application-content">
-        <div class="text-section">
-          <h3>{{ application.campaign.title }}</h3>
+    <div
+        v-for="application in applications"
+        :key="application.applicationNo"
+        class="application-card"
+    >
+      <div class="application-main">
+        <!-- 이미지 섹션 -->
+        <div class="application-image">
+          <img :src="`http://localhost:9876/images/${application.campaign.imageUrl}`" alt="캠페인 이미지" />
+        </div>
+
+        <!-- 정보 섹션 -->
+        <div class="application-info">
+          <h3 class="campaign-title">{{ application.campaign.title }}</h3>
           <p><strong>신청 코멘트:</strong> {{ application.comment }}</p>
-          <p><strong>상태:</strong> {{ application.status }}</p>
+          <p><strong>상태:</strong> {{ statusText[application.status] }}</p>
           <p><strong>신청일:</strong> {{ formatDate(application.createdAt) }}</p>
         </div>
-        <button class="delete-button" @click="deleteApplication(application.applicationNo)">삭제</button>
+
+        <!-- 버튼 영역 -->
+        <div class="application-manage">
+          <!-- 신청 취소 버튼 -->
+          <button
+              class="manage-button"
+              v-if="application.status !== 'APPROVED'"
+              @click="deleteApplication(application.applicationNo)"
+          >
+            신청 취소
+          </button>
+
+          <!-- 리뷰 작성 버튼 -->
+          <router-link
+              class="manage-button review"
+              v-if="application.status === 'APPROVED'"
+              to="/review/form"
+          >
+            리뷰 작성하기
+          </router-link>
+        </div>
       </div>
     </div>
   </div>
@@ -27,6 +57,12 @@ import axios from 'axios'
 const userNo = 1 // 🔹 임시: 실제 로그인된 유저 ID로 대체 필요
 const applications = ref([])
 
+const statusText = {
+  PENDING: '처리 중',
+  APPROVED: '선정됨',
+  REJECTED: '미선정'
+}
+
 const fetchApplications = async () => {
   try {
     const { data } = await axios.get(`/api/application/myapplication/${userNo}`)
@@ -37,13 +73,13 @@ const fetchApplications = async () => {
 }
 
 const deleteApplication = async (applicationNo) => {
-  if (confirm('정말 삭제하시겠습니까?')) {
+  if (confirm('정말 취소하시겠습니까?')) {
     try {
       await axios.delete(`/api/application/myapplication/delete/${applicationNo}`)
       applications.value = applications.value.filter(a => a.applicationNo !== applicationNo)
     } catch (error) {
-      console.error('삭제 실패:', error)
-      alert('삭제 중 오류가 발생했습니다.')
+      console.error('취소 실패:', error)
+      alert('취소 중 오류가 발생했습니다.')
     }
   }
 }
@@ -64,55 +100,81 @@ onMounted(() => {
 
 <style scoped>
 .my-application-wrapper {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 40px auto;
   padding: 20px;
   font-family: 'Noto Sans KR', sans-serif;
 }
 
-h2 {
+.page-title {
   font-size: 1.8rem;
-  margin-bottom: 24px;
+  font-weight: bold;
   text-align: center;
-  color: #333;
+  margin-bottom: 32px;
+  color: #2c3e50;
 }
 
 .empty-message {
   text-align: center;
   color: #999;
   font-size: 1rem;
+  margin-top: 60px;
 }
 
 .application-card {
-  border: 1px solid #ddd;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
   padding: 20px;
-  margin-bottom: 16px;
-  border-radius: 10px;
-  background-color: #fff;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.application-content {
+.application-main {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  gap: 24px;
+  align-items: flex-start;
 }
 
-.text-section {
+.application-image {
+  width: 200px;
+  height: 200px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.application-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.application-info {
   flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-.text-section h3 {
+.campaign-title {
   font-size: 1.2rem;
-  margin-bottom: 8px;
+  font-weight: 600;
+  margin-bottom: 12px;
   color: #2c3e50;
 }
 
-.text-section p {
+.application-info p {
   font-size: 0.95rem;
-  margin: 4px 0;
+  margin-bottom: 8px;
+  color: #333;
 }
 
-.delete-button {
+.application-manage {
+  margin-top: 16px;
+}
+
+.manage-button {
   background-color: #e74c3c;
   color: white;
   padding: 10px 16px;
@@ -120,9 +182,20 @@ h2 {
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.9rem;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.2s ease;
 }
 
-.delete-button:hover {
+.manage-button:hover {
   background-color: #c0392b;
+}
+
+.manage-button.review {
+  background-color: #3498db;
+}
+
+.manage-button.review:hover {
+  background-color: #2980b9;
 }
 </style>
