@@ -6,7 +6,7 @@
           class="campaign-image"
           :class="{ blurred: isCompleted }"
       >
-        <img :src="`http://localhost:9876${campaign.imageUrl}`" alt="캠페인 이미지" />
+        <img :src="`http://localhost:9876/images/${campaign.imageUrl}`" alt="캠페인 이미지" />
       </div>
 
       <!-- 정보 섹션 -->

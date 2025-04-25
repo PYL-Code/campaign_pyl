@@ -48,13 +48,20 @@
 import { ref, onMounted, onBeforeMount } from 'vue'
 import axios from 'axios'
 import { useRouter, useRoute } from 'vue-router'
+import { getUserFromToken } from '../utils/jwt'
 
 const router = useRouter()
 const route = useRoute()
-const userNo = 1 // 🔹 TODO 임시: 실제 구현에서는 로그인 사용자 ID로 대체해야 함
-const campaignNo = route.params.id // 캠페인 ID를 URL에서 가져옴
 
-// 초기값 설정
+const userInfo = getUserFromToken()
+if (!userInfo || !userInfo.userNo) {
+  alert('로그인이 필요합니다.')
+  router.push('/login')
+}
+
+const userNo = userInfo.userNo
+const campaignNo = route.params.id
+
 const application = ref({
   comment: '',
   status: 'PENDING',
@@ -77,7 +84,6 @@ onMounted(async () => {
 
     const { data: userData } = await axios.get(`/api/application/users/select/${userNo}`)
     users.value = userData
-    // console.log("userData: ", userData)
   } catch (error) {
     console.error('데이터 불러오기 오류:', error)
   }
@@ -99,7 +105,7 @@ const submitApplication = async () => {
     application.value.comment = ''
   } catch (error) {
     if (error.response && error.response.status === 409) {
-      alert('이미 신청한 캠페인입니다.')  // ❗ 중복 신청 알림
+      alert('이미 신청한 캠페인입니다.')
     } else {
       alert('신청 중 오류가 발생했습니다.')
     }
@@ -107,6 +113,7 @@ const submitApplication = async () => {
   }
 }
 </script>
+
 
 <style scoped>
 .application-form-wrapper {

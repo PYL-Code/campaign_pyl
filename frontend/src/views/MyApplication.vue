@@ -61,8 +61,9 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
+import { getUserFromToken } from '@/utils/jwt'
 
-const userNo = 1 // 🔹 임시: 실제 로그인된 유저 ID로 대체 필요
+// const userNo = 1 // 🔹 임시: 실제 로그인된 유저 ID로 대체 필요
 const applications = ref([]) // 모든 신청 목록
 const filter = ref('ALL') // 필터 상태
 const statusText = {
@@ -70,6 +71,14 @@ const statusText = {
   APPROVED: '선정됨',
   REJECTED: '미선정'
 }
+
+const userInfo = getUserFromToken()
+if (!userInfo || !userInfo.userNo) {
+  alert('로그인이 필요합니다.')
+  router.push('/login')
+}
+
+const userNo = userInfo.userNo
 
 const fetchApplications = async () => {
   try {
