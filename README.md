@@ -13,6 +13,9 @@
   - 경로 : `C:/CampaignImg/`
 - img 프록시를 `/images/sample.jpg` 형식으로 설정해 두었습니다.   
   필요시 `config` > `WebConfig.java` 파일에서 변경할 수 있습니다.
+- RabbitMQ에서 `Users`데이터를 주고받을 때 `password` 항목을 포함했습니다.   
+  password 항목을 보안 상의 이유로 제외하는 것이 좋다고 하는데,   
+  제외할 경우 제 Users 엔티티에서 `password`를 완전히 제거해도 무방합니다.
 
 ***
 

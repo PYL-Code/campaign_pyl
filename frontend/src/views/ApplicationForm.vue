@@ -48,18 +48,25 @@
 import { ref, onMounted, onBeforeMount } from 'vue'
 import axios from 'axios'
 import { useRouter, useRoute } from 'vue-router'
-import { getUserFromToken } from '../utils/jwt'
+import { getUserFromToken } from '@/utils/jwt'
+import { getUserNo } from '@/utils/jwt'
 
 const router = useRouter()
 const route = useRoute()
 
-const userInfo = getUserFromToken()
-if (!userInfo || !userInfo.userNo) {
+// const userInfo = getUserFromToken()
+// if (!userInfo || !userInfo.userNo) {
+//   alert('로그인이 필요합니다.')
+//   // router.push('/login')
+// }
+
+const userInfo = getUserNo()
+if(!userInfo) {
   alert('로그인이 필요합니다.')
   router.push('/login')
 }
 
-const userNo = userInfo.userNo
+const userNo = userInfo
 const campaignNo = route.params.id
 
 const application = ref({
